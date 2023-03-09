@@ -1,17 +1,16 @@
 import { pokeApi } from "@/api";
 import { Layout } from "@/components/layouts";
-import { Pokemon } from "@/interfaces";
+import { Pokemon, PokemonListResponse } from "@/interfaces";
 import { getPokemonInfo, localFavourites } from "@/utils";
-import { Button, Card, Container, Grid, Image, Text } from "@nextui-org/react";
+import { Grid, Card, Button, Container, Text, Image } from "@nextui-org/react";
+import confetti from "canvas-confetti";
 import { GetStaticProps, GetStaticPaths, NextPage } from "next";
 import { useEffect, useState } from "react";
-import confetti from "canvas-confetti";
-
 interface Props {
   pokemon: Pokemon;
 }
 
-const PokemonPage: NextPage<Props> = ({ pokemon }) => {
+const PokemonByName: NextPage<Props> = ({ pokemon }) => {
   const [isInFavourites, setIsInFavourites] = useState(false);
 
   useEffect(() => {
@@ -112,19 +111,21 @@ const PokemonPage: NextPage<Props> = ({ pokemon }) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async (ctx) => {
-  const pokemons151 = [...Array(151)].map((_, index) => `${index + 1}`);
+  const { data } = await pokeApi.get<PokemonListResponse>(`/pokemon?limit=151`);
+
   return {
-    paths: pokemons151.map((id) => ({ params: { id } })),
+    paths: data.results.map((p) => ({ params: { name: p.name } })),
     fallback: false,
   };
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const { id } = params as { id: string };
-
-  // entender q si falla es en buildtime, no hace falta un try-catch
+  const { name } = params as { name: string };
   return {
-    props: { pokemon: await getPokemonInfo(id) },
+    props: {
+      pokemon: await getPokemonInfo(name),
+    },
   };
 };
-export default PokemonPage;
+
+export default PokemonByName;

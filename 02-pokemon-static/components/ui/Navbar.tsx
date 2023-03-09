@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import styles from "./Navbar.module.css";
 
-const Navbar = () => {
+export const Navbar = () => {
   const { theme } = useTheme();
   return (
     <div
@@ -42,5 +42,3 @@ const Navbar = () => {
     </div>
   );
 };
-
-export default Navbar;

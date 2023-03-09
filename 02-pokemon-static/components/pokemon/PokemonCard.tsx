@@ -11,7 +11,7 @@ const PokemonCard: FC<Props> = ({ pokemon }) => {
   const router = useRouter();
 
   const onClickNavigateTo = () => {
-    router.push(`/pokemon/${pokemon.id}`);
+    router.push(`/name/${pokemon.name}`);
   };
   return (
     <Grid xs={6} sm={3} md={2} xl={1} key={pokemon.id + pokemon.name}>

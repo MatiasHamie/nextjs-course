@@ -2,7 +2,7 @@ import { NextPage, GetStaticProps } from "next";
 import { Layout } from "../components/layouts/Layout";
 import pokeApi from "../api/pokeApi";
 import { PokemonListResponse, SmallPokemon } from "@/interfaces";
-import { Card, Grid, Row, Text } from "@nextui-org/react";
+import { Grid, Image } from "@nextui-org/react";
 import PokemonCard from "@/components/pokemon/PokemonCard";
 
 interface Props {
@@ -10,7 +10,6 @@ interface Props {
 }
 
 const HomePage: NextPage<Props> = (props) => {
-  console.log(props);
   const pokemons: SmallPokemon[] = props.pokemons;
   return (
     <Layout title="Listado de Pokemons">
