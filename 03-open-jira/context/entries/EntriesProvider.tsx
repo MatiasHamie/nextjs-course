@@ -20,13 +20,13 @@ const Entries_INITIAL_STATE: EntriesState = {
       _id: uuidv4(),
       description: "In progress: loremipsum2",
       status: "in-progress",
-      createdAt: Date.now() - 1000000,
+      createdAt: Date.now(),
     },
     {
       _id: uuidv4(),
       description: "Terminadas: loremipsum3",
       status: "finished",
-      createdAt: Date.now() - 100000,
+      createdAt: Date.now(),
     },
   ],
   children: [],
@@ -35,8 +35,23 @@ const Entries_INITIAL_STATE: EntriesState = {
 export const EntriesProvider: FC<EntriesState> = ({ children }) => {
   const [state, dispatch] = useReducer(entriesReducer, Entries_INITIAL_STATE);
 
+  const addNewEntry = (description: string) => {
+    const newEntry: Entry = {
+      _id: uuidv4(),
+      description,
+      createdAt: Date.now(),
+      status: "pending",
+    };
+
+    dispatch({ type: "[Entry] - Add", payload: newEntry });
+  };
+
+  const updateEntry = (entry: Entry) => {
+    dispatch({ type: "[Entry] - Update", payload: entry });
+  };
+
   return (
-    <EntriesContext.Provider value={{ ...state }}>
+    <EntriesContext.Provider value={{ ...state, addNewEntry, updateEntry }}>
       {children}
     </EntriesContext.Provider>
   );
