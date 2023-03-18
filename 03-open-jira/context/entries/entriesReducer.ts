@@ -9,6 +9,10 @@ type EntriesActionType =
   | {
       type: "[Entry] - Update";
       payload: Entry;
+    }
+  | {
+      type: "[Entry] - Initial Refresh";
+      payload: Entry[];
     };
 
 export const entriesReducer = (
@@ -28,6 +32,12 @@ export const entriesReducer = (
         entries: state.entries?.map((entry) =>
           entry._id === action.payload._id ? action.payload : entry
         ),
+      };
+
+    case "[Entry] - Initial Refresh":
+      return {
+        ...state,
+        entries: [...action.payload],
       };
 
     default:
