@@ -2,6 +2,7 @@ import { AppBar, IconButton, Toolbar, Typography } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { FC, useContext } from "react";
 import { UIContext } from "../../context/ui/UIContext";
+import Link from "next/link";
 
 interface Props {}
 
@@ -14,7 +15,9 @@ export const NavBar: FC<Props> = () => {
           <MenuIcon />
         </IconButton>
 
-        <Typography variant="h6">OpenJira</Typography>
+        <Link href="/" style={{ color: "inherit", textDecoration: "none" }}>
+          <Typography variant="h6">OpenJira</Typography>
+        </Link>
       </Toolbar>
     </AppBar>
   );
