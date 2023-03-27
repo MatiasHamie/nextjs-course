@@ -1,4 +1,4 @@
-import { UiProvider } from "@/context";
+import { CartProvider, UiProvider } from "@/context";
 import "@/styles/globals.css";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import type { AppProps } from "next/app";
@@ -14,10 +14,12 @@ export default function App({ Component, pageProps }: AppProps) {
       }}
     >
       <UiProvider>
-        <ThemeProvider theme={lightTheme}>
-          <CssBaseline />
-          <Component {...pageProps} />
-        </ThemeProvider>
+        <CartProvider>
+          <ThemeProvider theme={lightTheme}>
+            <CssBaseline />
+            <Component {...pageProps} />
+          </ThemeProvider>
+        </CartProvider>
       </UiProvider>
     </SWRConfig>
   );
