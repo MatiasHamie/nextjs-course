@@ -1,4 +1,4 @@
-import { UiContext } from "@/context";
+import { CartContext, UiContext } from "@/context";
 import {
   ClearOutlined,
   SearchOutlined,
@@ -25,6 +25,7 @@ export const Navbar = () => {
   const { toggleSideMenu } = useContext(UiContext);
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearchVisible, setIsSearchVisible] = useState(false);
+  const { numberOfItems } = useContext(CartContext);
 
   const onSearchTerm = () => {
     if (searchTerm.trim().length === 0) return;
@@ -94,7 +95,7 @@ export const Navbar = () => {
           <IconButton
             onClick={() => setIsSearchVisible(true)}
             className="fade-in"
-              sx={{ display: { xs: "none", sm: "flex" } }}
+            sx={{ display: { xs: "none", sm: "flex" } }}
           >
             <SearchOutlined />
           </IconButton>
@@ -109,7 +110,10 @@ export const Navbar = () => {
         <NextLink href="/cart" passHref legacyBehavior>
           <Link>
             <IconButton>
-              <Badge badgeContent={2} color="secondary">
+              <Badge
+                badgeContent={numberOfItems! > 9 ? "+9" : numberOfItems}
+                color="secondary"
+              >
                 <ShoppingCartOutlined />
               </Badge>
             </IconButton>

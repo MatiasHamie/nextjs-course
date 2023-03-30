@@ -15,7 +15,7 @@ import { ICartProduct, IProduct, ISize } from "@/interfaces";
 import { Box, Button, Chip, Grid, Typography } from "@mui/material";
 import { FC, useContext, useState } from "react";
 import { ShopLayout } from "../../components/layouts/ShopLayout";
-import { initialData } from "../../database/products";
+import { initialData } from "../../database/seed-products";
 import { dbProducts } from "@/database";
 import { useRouter } from "next/router";
 import { CartContext } from "@/context";

@@ -1,4 +1,5 @@
-import { CartProvider, UiProvider } from "@/context";
+// @ts-nocheck
+import { CartProvider, UiProvider, AuthProvider } from "@/context";
 import "@/styles/globals.css";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import type { AppProps } from "next/app";
@@ -13,14 +14,16 @@ export default function App({ Component, pageProps }: AppProps) {
           fetch(resource, init).then((res) => res.json()),
       }}
     >
-      <UiProvider>
-        <CartProvider>
-          <ThemeProvider theme={lightTheme}>
-            <CssBaseline />
-            <Component {...pageProps} />
-          </ThemeProvider>
-        </CartProvider>
-      </UiProvider>
+      <AuthProvider>
+        <UiProvider>
+          <CartProvider>
+            <ThemeProvider theme={lightTheme}>
+              <CssBaseline />
+              <Component {...pageProps} />
+            </ThemeProvider>
+          </CartProvider>
+        </UiProvider>
+      </AuthProvider>
     </SWRConfig>
   );
 }
