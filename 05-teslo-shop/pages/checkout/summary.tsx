@@ -11,8 +11,28 @@ import {
 } from "@mui/material";
 import { ShopLayout } from "../../components/layouts/ShopLayout";
 import NextLink from "next/link";
+import { useContext } from "react";
+import { CartContext } from "@/context";
+import { countries } from "@/utils";
 
 const SummaryPage = () => {
+  const { shippingAddress, numberOfItems } = useContext(CartContext);
+
+  if (!shippingAddress) {
+    return <></>;
+  }
+
+  const {
+    firstName,
+    lastName,
+    city,
+    address,
+    address2 = "",
+    zip,
+    phone,
+    country,
+  } = shippingAddress;
+
   return (
     <ShopLayout
       title="Resumen de la orden"
@@ -29,7 +49,10 @@ const SummaryPage = () => {
         <Grid item xs={12} sm={5}>
           <Card className="summary-card">
             <CardContent>
-              <Typography variant="h2">Resumen (3 productos)</Typography>
+              <Typography variant="h2">
+                Resumen ({numberOfItems}{" "}
+                {numberOfItems! > 1 ? "productos" : "producto"})
+              </Typography>
               <Divider sx={{ my: 1 }} />
 
               <Box
@@ -45,11 +68,20 @@ const SummaryPage = () => {
                 </NextLink>
               </Box>
 
-              <Typography>Matias Valente</Typography>
-              <Typography>232 Algun lugar</Typography>
-              <Typography>Toronto, HYA 235</Typography>
-              <Typography>Canadá</Typography>
-              <Typography>+1 232313213</Typography>
+              <Typography>
+                {firstName} {lastName}
+              </Typography>
+              <Typography>
+                {address}
+                {address2 ? `, ${address2}` : ""}
+              </Typography>
+              <Typography>
+                {city}, {zip}
+              </Typography>
+              <Typography>
+                {countries.find((c) => c.code === country)?.name}
+              </Typography>
+              <Typography>{phone}</Typography>
               <Divider sx={{ my: 1 }} />
 
               <Box display="flex" justifyContent="end">

@@ -1,4 +1,3 @@
-import { tesloApi } from "@/api";
 import { AuthLayout } from "@/components/layouts";
 import { AuthContext } from "@/context";
 import { validations } from "@/utils";
@@ -45,6 +44,8 @@ const RegisterPage = () => {
       setTimeout(() => setShowError(false), 3000);
       return;
     }
+    // esto es porque uso query params cuando me tengo q loguear y estaba en una pagina
+    const destination = router.query.p?.toString() || "/";
 
     router.replace("/");
   };
@@ -122,7 +123,15 @@ const RegisterPage = () => {
               </Button>
             </Grid>
             <Grid item xs={12} display="flex" justifyContent="end">
-              <NextLink href="/auth/login" passHref legacyBehavior>
+              <NextLink
+                href={
+                  router.query.p
+                    ? `/auth/login?p=${router.query.p}`
+                    : "/auth/login"
+                }
+                passHref
+                legacyBehavior
+              >
                 <Link underline="always">¿Ya tienes cuenta?</Link>
               </NextLink>
             </Grid>
