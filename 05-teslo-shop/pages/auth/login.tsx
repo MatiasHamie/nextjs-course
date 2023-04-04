@@ -7,14 +7,16 @@ import {
   Box,
   Button,
   Chip,
+  Divider,
   Grid,
   Link,
   TextField,
   Typography,
 } from "@mui/material";
+import { getProviders, getSession, signIn } from "next-auth/react";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 type FormData = {
@@ -30,21 +32,31 @@ const LoginPage = () => {
     formState: { errors },
   } = useForm<FormData>();
   const [showError, setShowError] = useState(false);
-  const { loginUser } = useContext(AuthContext);
+  const [providers, setProviders] = useState<any>({});
+
+  useEffect(() => {
+    getProviders().then((prov) => {
+      setProviders(prov);
+    });
+  }, []);
+
+  // const { loginUser } = useContext(AuthContext);
 
   const onLoginUser = async ({ email, password }: FormData) => {
     setShowError(false);
+    // credentials es el provider q configure en el [...nextauth]
+    await signIn("credentials", { email, password });
 
-    const isValidLogin = loginUser(email, password);
+    // const isValidLogin = loginUser(email, password);
 
-    if (!isValidLogin) {
-      setShowError(true);
-      setTimeout(() => setShowError(false), 3000);
-      return;
-    }
-    // esto es porque uso query params cuando me tengo q loguear y estaba en una pagina
-    const destination = router.query.p?.toString() || "/";
-    router.replace(destination);
+    // if (!isValidLogin) {
+    //   setShowError(true);
+    //   setTimeout(() => setShowError(false), 3000);
+    //   return;
+    // }
+    // // esto es porque uso query params cuando me tengo q loguear y estaba en una pagina
+    // const destination = router.query.p?.toString() || "/";
+    // router.replace(destination);
   };
 
   return (
@@ -121,11 +133,65 @@ const LoginPage = () => {
                 <Link underline="always">¿No tienes cuenta?</Link>
               </NextLink>
             </Grid>
+
+            <Grid
+              item
+              xs={12}
+              display="flex"
+              justifyContent="end"
+              flexDirection="column"
+            >
+              <Divider sx={{ width: "100%", mb: 2 }} />
+              {Object.values(providers).map((p: any) => {
+                if (p.id === "credentials")
+                  return <div key="credentials"></div>;
+                return (
+                  <Button
+                    key={p.id}
+                    variant="outlined"
+                    fullWidth
+                    color="primary"
+                    sx={{ mb: 2 }}
+                    onClick={() => {
+                      signIn(p.id);
+                    }}
+                  >
+                    {p.name}
+                  </Button>
+                );
+              })}
+            </Grid>
           </Grid>
         </Box>
       </form>
     </AuthLayout>
   );
+};
+
+// You should use getServerSideProps when:
+// - Only if you need to pre-render a page whose data must be fetched at request time
+import { GetServerSideProps } from "next";
+
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  query,
+}) => {
+  const session = await getSession({ req });
+  // esto es para que cuando se loguee ok redirecte a la pagina donde estaba previamente
+  const { p = "/" } = query;
+
+  if (session) {
+    return {
+      redirect: {
+        destination: p.toString(),
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
 };
 
 export default LoginPage;

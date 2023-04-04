@@ -5,6 +5,7 @@ import { tesloApi } from "@/api";
 import Cookies from "js-cookie";
 import axios from "axios";
 import { useRouter } from "next/router";
+import { signOut, useSession } from "next-auth/react";
 
 export interface AuthState {
   isLoggedIn: boolean;
@@ -20,11 +21,19 @@ const Auth_INITIAL_STATE: AuthState = {
 
 export const AuthProvider: FC<AuthState> = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, Auth_INITIAL_STATE);
-
+  const { data, status } = useSession();
   const router = useRouter();
+
   useEffect(() => {
-    checkToken();
-  }, []);
+    if (status === "authenticated") {
+      console.log({ user: data?.user });
+      dispatch({ type: "[Auth] - Login", payload: data?.user! as IUser });
+    }
+  }, [status, data]);
+
+  // useEffect(() => {
+  //   checkToken();
+  // }, []);
 
   const checkToken = async () => {
     if (!Cookies.get("token")) return;
@@ -94,7 +103,7 @@ export const AuthProvider: FC<AuthState> = ({ children }) => {
   };
 
   const logout = () => {
-    Cookies.remove("token");
+    // Cookies.remove("token");
     Cookies.remove("cart");
     Cookies.remove("firstName");
     Cookies.remove("lastName");
@@ -104,7 +113,8 @@ export const AuthProvider: FC<AuthState> = ({ children }) => {
     Cookies.remove("city");
     Cookies.remove("country");
     Cookies.remove("phone");
-    router.reload();
+    signOut(); //el signOut de nextauth ya hace el reload y el remove del token
+    // router.reload();
   };
 
   return (

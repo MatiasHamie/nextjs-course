@@ -11,6 +11,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { getSession, signIn } from "next-auth/react";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
 import { useContext, useState } from "react";
@@ -45,9 +46,11 @@ const RegisterPage = () => {
       return;
     }
     // esto es porque uso query params cuando me tengo q loguear y estaba en una pagina
-    const destination = router.query.p?.toString() || "/";
+    // const destination = router.query.p?.toString() || "/";
 
-    router.replace("/");
+    // router.replace(destination);
+
+    await signIn("credentials", { email, password });
   };
   return (
     <AuthLayout title="Ingresar">
@@ -140,6 +143,31 @@ const RegisterPage = () => {
       </form>
     </AuthLayout>
   );
+};
+// You should use getServerSideProps when:
+// - Only if you need to pre-render a page whose data must be fetched at request time
+import { GetServerSideProps } from "next";
+
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  query,
+}) => {
+  const session = await getSession({ req });
+  // esto es para que cuando se loguee ok redirecte a la pagina donde estaba previamente
+  const { p = "/" } = query;
+
+  if (session) {
+    return {
+      redirect: {
+        destination: p.toString(),
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
 };
 
 export default RegisterPage;

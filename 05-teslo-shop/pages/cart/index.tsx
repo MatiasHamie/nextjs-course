@@ -18,7 +18,7 @@ const CartPage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (isLoaded && numberOfItems! > 0) {
+    if (isLoaded && numberOfItems! < 0) {
       router.replace("/cart/empty");
     }
   }, [isLoaded, numberOfItems, router]);
